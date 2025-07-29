@@ -393,5 +393,3 @@ curl -X GET "https://localhost:7000/api/test/google-test" -k
 1. Test endpoints without token (should fail)
 2. Test with invalid token (should fail)
 3. Test non-existent resources (should return 404)
-
-This comprehensive guide covers all possible testing scenarios for your API!
