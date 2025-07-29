@@ -40,7 +40,6 @@ public class AuthController : ControllerBase
     {
         try
         {
-            // Authenticate using the cookie scheme (where Google auth result is stored)
             var result = await HttpContext.AuthenticateAsync("Cookies");
             
             if (!result.Succeeded || result.Principal == null)
@@ -58,12 +57,10 @@ public class AuthController : ControllerBase
                 return BadRequest($"Required user information not available. Email: {email}, ProviderId: {providerId}");
             }
 
-            // Check if user exists
             var existingUser = await _userRepository.GetByProviderIdAsync(providerId, "Google");
             
             if (existingUser == null)
             {
-                // Create new user
                 var newUser = new User
                 {
                     Email = email,
@@ -77,10 +74,7 @@ public class AuthController : ControllerBase
                 existingUser = newUser;
             }
 
-            // Generate JWT token
-            var token = GenerateJwtToken(existingUser);
-            
-            // Clear the temporary cookie
+            var token = GenerateJwtToken(existingUser);            
             await HttpContext.SignOutAsync("Cookies");
             
             return Ok(new { Token = token, User = existingUser });
